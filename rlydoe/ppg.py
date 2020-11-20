@@ -200,6 +200,7 @@ class PPG:
         next_state = torch.from_numpy(next_state).to(device)
         next_value = self.critic(next_state).detach()
         values = values + [next_value]
+        global_step = 0
 
         returns = []
         gae = 0
@@ -235,6 +236,7 @@ class PPG:
                 dist = Categorical(action_probs)
                 action_log_probs = dist.log_prob(actions)
                 entropy = dist.entropy()
+                global_step += 1
 
                 # calculate clipped surrogate objective, classic PPO loss
                 ratios = (action_log_probs - old_log_probs).exp()
@@ -242,7 +244,9 @@ class PPG:
                 surr1 = ratios * advantages
                 surr2 = ratios.clamp(1 - self.eps_clip, 1 + self.eps_clip) * advantages
                 policy_loss = -torch.min(surr1, surr2) - self.beta_s * entropy
-                self.writer.add_scalar("losses/policy_loss", policy_loss.mean().item())
+                self.writer.add_scalar(
+                    "losses/policy_loss", policy_loss.mean().item(), global_step
+                )
 
                 update_network_(policy_loss, self.opt_actor)
 
@@ -417,12 +421,11 @@ def main(
             action = action.item()
 
             next_state, reward, done, infos = env.step(action)
+            if wandb_save:
+                writer.add_scalar("charts/episode_reward", time)
             for info in infos:
                 if "episode" in info.keys():
                     print(f"time={time}, episode_reward={info['episode']['r']}")
-                    writer.add_scalar(
-                        "charts/episode_reward", info["episode"]["r"], time
-                    )
                     break
             memory = Memory(state, action, action_log_prob, reward, done, value)
             memories.append(memory)
