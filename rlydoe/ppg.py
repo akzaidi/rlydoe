@@ -353,6 +353,7 @@ def main(
             sync_tensorboard=True,
             name=exp_name,
             monitor_gym=True,
+            save_code=True,
         )
 
     writer = SummaryWriter(f"runs/{exp_name}")
