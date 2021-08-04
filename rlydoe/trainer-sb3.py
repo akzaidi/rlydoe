@@ -93,6 +93,7 @@ def run_trainer(cfg: DictConfig):
     model.learn(
         total_timesteps=cfg["learner"]["total_timesteps"], callback=callback_list,
     )
+    model.save(f"models/{experiment_name}")
 
 
 if __name__ == "__main__":
