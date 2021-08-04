@@ -1,8 +1,11 @@
 # for VMs or colab:
 # Set up fake display; otherwise rendering will fail
-# import os
-# os.system("Xvfb :1 -screen 0 1024x768x24 &")
-# os.environ['DISPLAY'] = ':1'
+
+import os
+
+if not "DISPLAY" in os.environ:
+    os.system("Xvfb :1 -screen 0 1024x768x24 &")
+    os.environ["DISPLAY"] = ":1"
 
 import datetime
 import gym
@@ -67,11 +70,6 @@ def run_trainer(cfg: DictConfig):
         env, "videos", record_video_trigger=lambda x: x % 2000 == 0, video_length=200
     )  # record videos
 
-    if cfg["learner"]["replay_buffer_class"].lower() == "her":
-        replay_buffer_class = HerReplayBuffer
-    else:
-        replay_buffer_class = None
-
     if cfg["learner"]["name"].lower() == "ppo":
         model = PPO(
             cfg["learner"]["policy_type"],
@@ -80,6 +78,11 @@ def run_trainer(cfg: DictConfig):
             tensorboard_log=f"runs/{experiment_name}",
         )
     elif cfg["learner"]["name"].lower() == "sac":
+        if cfg["learner"]["replay_buffer_class"].lower() == "her":
+            replay_buffer_class = HerReplayBuffer
+        else:
+            replay_buffer_class = None
+
         model = SAC(
             cfg["learner"]["policy_type"],
             env,
