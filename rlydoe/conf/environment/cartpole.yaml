@@ -4,4 +4,4 @@ observation: box
 action: box
 # if you know max_reward provide it here
 # used if callbacks.early_stopping=True
-max_reward:
+max_reward: 200

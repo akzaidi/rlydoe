@@ -15,6 +15,10 @@ from stable_baselines3 import PPO
 from stable_baselines3 import HerReplayBuffer, SAC, DDPG, TD3
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, VecVideoRecorder
+from stable_baselines3.common.callbacks import (
+    EvalCallback,
+    StopTrainingOnRewardThreshold,
+)
 from wandb.integration.sb3 import WandbCallback
 import wandb
 
@@ -62,9 +66,13 @@ def run_trainer(cfg: DictConfig):
             name=experiment_name,
             project="sb3",
             config=cfg,
-            sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
-            monitor_gym=True,  # auto-upload the videos of agents playing the game
-            save_code=True,  # optional
+            sync_tensorboard=cfg["callbacks"][
+                "sync_tensorboard"
+            ],  # auto-upload sb3's tensorboard metrics
+            monitor_gym=cfg["callbacks"][
+                "monitor_gym"
+            ],  # auto-upload the videos of agents playing the game
+            save_code=cfg["callbacks"]["save_code"],  # optional
         )
         callback_list.append(
             WandbCallback(
@@ -73,6 +81,27 @@ def run_trainer(cfg: DictConfig):
                 model_save_path=f"models/{experiment_name}",
             )
         )
+
+    if cfg["callbacks"]["early_stopping"]:
+        if cfg["environment"]["max_reward"] is None:
+            logger.error(
+                f"Max reward must be provied in conf.environment.max_reward for early stopping"
+            )
+        else:
+            logger.info(
+                f"Early stopping when reward reaches {cfg['environment']['max_reward']}"
+            )
+            eval_env = gym.make(cfg["environment"]["name"])
+            callback_on_best = StopTrainingOnRewardThreshold(
+                reward_threshold=cfg["environment"]["max_reward"], verbose=1
+            )
+            eval_callback = EvalCallback(
+                eval_env,
+                n_eval_episodes=100,
+                callback_on_new_best=callback_on_best,
+                verbose=1,
+            )
+            callback_list.append(eval_callback)
 
     # instantiate model class
     if cfg["learner"]["name"].lower() == "ppo":
