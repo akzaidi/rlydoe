@@ -31,20 +31,30 @@ def run_trainer(cfg: DictConfig):
     logger.info(f"\n{OmegaConf.to_yaml(cfg)}")
 
     # define the environment
+    # and monitor stats
     def make_env(env_name):
 
         env = gym.make(env_name)
-        env = Monitor(env)  # record stats such as returns
+        env = Monitor(env)
         return env
 
-    # define the algorithm, automatically upper case for richer display
+    # vectorize environment and record videos periodically
+    pmake_env = partial(make_env, env_name=cfg["environment"]["name"])
+    env = DummyVecEnv([pmake_env])
+    env = VecVideoRecorder(
+        env, "videos", record_video_trigger=lambda x: x % 2000 == 0, video_length=200
+    )
+
+    # define the algorithm, automatically upper case for more prominent display
     algorithm = cfg["learner"]["name"].upper()
 
+    # experiment name for tracking
     if cfg["callbacks"]["experiment_name"] == "default":
         experiment_name = f"{cfg['environment']['name']}_{datetime.datetime.now().strftime('%Y-%m-%m-%H:%M:%S')}_{algorithm}"
     else:
         experiment_name = cfg["callbacks"]["experiment_name"]
 
+    # define list of callbacks here
     callback_list = []
 
     if cfg["callbacks"]["wandb"]:
@@ -64,12 +74,7 @@ def run_trainer(cfg: DictConfig):
             )
         )
 
-    pmake_env = partial(make_env, env_name=cfg["environment"]["name"])
-    env = DummyVecEnv([pmake_env])
-    env = VecVideoRecorder(
-        env, "videos", record_video_trigger=lambda x: x % 2000 == 0, video_length=200
-    )  # record videos
-
+    # instantiate model class
     if cfg["learner"]["name"].lower() == "ppo":
         model = PPO(
             cfg["learner"]["policy_type"],
