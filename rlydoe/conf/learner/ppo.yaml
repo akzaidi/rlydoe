@@ -1,0 +1,10 @@
+name: PPO
+policy_type: MlpPolicy
+verbose: False
+tensorboard_logger: True
+total_timesteps: 25000
+# optional: provide if you want to override the default parameters in your learner
+build_params:
+  # n_steps: 1000
+  # batch_size: 64
+  # n_epochs: 25

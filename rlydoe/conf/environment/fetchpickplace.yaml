@@ -1,0 +1,4 @@
+name: FetchPush-v1
+# if Dict observations, say multi or MultiInput
+observation: multi
+action: box

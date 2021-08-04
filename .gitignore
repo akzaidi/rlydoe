@@ -2,3 +2,6 @@ runs/
 wandb/
 .vscode/
 *.pt
+.DS_Store
+outputs/
+*.code-workspace

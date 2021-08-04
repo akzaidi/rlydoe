@@ -1,0 +1,4 @@
+defaults:
+  - environment: cartpole
+  - learner: PPO
+  - callbacks: wandb

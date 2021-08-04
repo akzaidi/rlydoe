@@ -1,0 +1,4 @@
+name: CartPole-v1
+# if Dict observations, say multi or MultiInput
+observation: box
+action: box

@@ -291,7 +291,7 @@ class PPG:
                 action_probs, policy_values = self.actor(states)
                 action_logprobs = action_probs.log()
 
-                # policy network loss copmoses of both the kl div loss as well as the auxiliary loss
+                # policy network loss composes of both the kl div loss as well as the auxiliary loss
                 aux_loss = clipped_value_loss(
                     policy_values, rewards, old_values, self.value_clip
                 )

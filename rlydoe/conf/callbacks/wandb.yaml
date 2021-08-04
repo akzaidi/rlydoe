@@ -1,0 +1,6 @@
+wandb: True
+experiment_name: default
+project: sb3
+sync_tensorboard: True
+monitor_gym: True
+save_code: True

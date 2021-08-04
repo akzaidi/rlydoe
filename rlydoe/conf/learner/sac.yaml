@@ -1,0 +1,12 @@
+name: SAC
+policy_type: MlpPolicy
+# policy_type: MultiInputPolicy
+verbose: False
+tensorboard_logger: True
+total_timesteps: 25000
+replay_buffer_class: HER
+# optional: provide if you want to override the default parameters in your learner
+build_params:
+  # n_steps: 1000
+  # batch_size: 64
+  # n_epochs: 25
