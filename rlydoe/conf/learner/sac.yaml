@@ -1,12 +1,22 @@
 name: SAC
 policy_type: MlpPolicy
+# for dict observations use:
 # policy_type: MultiInputPolicy
 verbose: False
 tensorboard_logger: True
 total_timesteps: 25000
 replay_buffer_class: HER
+replay_buffer_kwargs:
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  # IMPORTANT: because the env is not wrapped with a TimeLimit wrapper
+  # we have to manually specify the max number of steps per episode
+  max_episode_length: 200
+  online_sampling: True
 # optional: provide if you want to override the default parameters in your learner
 build_params:
   # n_steps: 1000
   # batch_size: 64
   # n_epochs: 25
+
+  

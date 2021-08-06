@@ -4,4 +4,4 @@ project: sb3
 sync_tensorboard: True
 monitor_gym: True
 save_code: True
-early_stopping: True
+early_stopping: False

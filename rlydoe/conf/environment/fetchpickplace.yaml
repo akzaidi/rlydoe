@@ -1,5 +1,6 @@
 name: FetchPush-v1
 # if Dict observations, say multi or MultiInput
+instances: 18
 observation: multi
 action: box
 # if you know max_reward provide it here

@@ -6,7 +6,7 @@
 let NUM_TIMESTEPS=4*10**7
 
 # Cartpole-v1
-python trainer-sb3.py learner=ppo learner.total_timesteps=$NUM_TIMESTEPS
+python trainer-sb3.py learner=ppo
 # sac sb3 does not support discrete actions
 # python trainer-sb3.py learner=sac
 

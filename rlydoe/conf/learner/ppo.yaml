@@ -1,5 +1,7 @@
 name: PPO
 policy_type: MlpPolicy
+# for dict observations use:
+# policy_type: MultiInputPolicy
 verbose: False
 tensorboard_logger: True
 total_timesteps: 25000

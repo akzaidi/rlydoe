@@ -1,8 +1,8 @@
-name: CartPole-v1
+name: parking-v0
 # if Dict observations, say multi or MultiInput
 instances: 1
-observation: box
+observation: multi
 action: box
 # if you know max_reward provide it here
 # used if callbacks.early_stopping=True
-max_reward: 200
+max_reward: 1
