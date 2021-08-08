@@ -39,6 +39,9 @@ dependencies:
   - pip:
       # - box2d-py==2.3.8
       # - cffi==1.14.1
+      - atari-py==0.2.9
+      - box2d-py==2.3.8
+      - Box2D==2.3.10
       - gym==0.18.3
       - highway-env==1.2
       - hydra-core==1.1.0

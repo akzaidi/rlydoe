@@ -1,0 +1,8 @@
+name: LunarLanderContinuous-v2
+# if Dict observations, say multi or MultiInput
+instances: 1
+observation: box
+action: box
+# if you know max_reward provide it here
+# used if callbacks.early_stopping=True
+max_reward: 1
