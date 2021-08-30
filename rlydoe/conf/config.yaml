@@ -2,3 +2,5 @@ defaults:
   - environment: cartpole
   - learner: ppo
   - callbacks: wandb
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog

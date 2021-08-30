@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
 	wget \
 	unrar \
 	unzip \
+	xvfb \
 	ca-certificates \
 	libjpeg-dev \
 	libpng-dev \
@@ -55,9 +56,20 @@ SHELL ["/bin/bash", "-c", "source ~/.bashrc"]
 RUN conda activate rlex
 
 # install atari roms
-RUN wget http://www.atarimania.com/roms/Roms.rar
-RUN mkdir -p /src/ROM
-RUN unrar e Roms.rar /src/ROM/
-RUN python -m atari_py.import_roms /src/ROM/
+WORKDIR /src/rlydoe
 
-CMD [ "/bin/bash" ]
+# RUN /src/install-atari.sh
+# CMD [ "/bin/bash" ]
+
+# Install Atari ROMs.
+# RUN pip3 install atari-py
+RUN mkdir roms && \
+	cd roms && \
+	wget http://www.atarimania.com/roms/Roms.rar && \
+	unrar e Roms.rar && \
+	unzip ROMS.zip && \
+	unzip "HC ROMS.zip" && \
+	rm ROMS.zip && \
+	rm "HC ROMS.zip" && \
+	rm Roms.rar && \
+	python3 -m atari_py.import_roms .
