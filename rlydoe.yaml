@@ -1,4 +1,4 @@
-name: rlex
+name: rlydoe
 channels:
   - pytorch
   - conda-forge
@@ -45,6 +45,7 @@ dependencies:
       - gym==0.18.3
       - highway-env==1.2
       - hydra-core==1.1.0
+      - hydra-colorlog==1.1.0
       - ipykernel==5.4.2
       - mujoco-py==2.0.2.13
       - numpy==1.21.1
