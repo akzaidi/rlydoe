@@ -1,8 +1,8 @@
 FROM ubuntu:18.04
 # FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
 
-ARG PYTHON_VERSION=3.7
-ARG PYTORCH_DEPS=cpuonly
+# ARG PYTHON_VERSION=3.7
+# ARG PYTORCH_DEPS=cpuonly
 
 RUN apt-get update && apt-get install -y \
 	build-essential \
@@ -34,7 +34,8 @@ RUN curl -o ~/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest
 RUN curl -o /usr/local/bin/patchelf https://s3-us-west-2.amazonaws.com/openai-sci-artifacts/manual-builds/patchelf_0.9_amd64.elf \
 	&& chmod +x /usr/local/bin/patchelf
 
-COPY . /src
+COPY rlydoe /src
+COPY rlydoe.yaml /src/rlydoe.yaml
 WORKDIR /src
 
 # install MuJoCo
@@ -49,17 +50,9 @@ ENV LD_LIBRARY_PATH /root/.mujoco/mujoco200/bin:${LD_LIBRARY_PATH}
 # add conda paths
 ENV PATH=/opt/conda/bin:$PATH 
 
-# build and activate conda environment
-RUN /opt/conda/bin/conda env update -f rlex.yaml
-RUN echo "conda activate rlex" >> ~/.bashrc
-SHELL ["/bin/bash", "-c", "source ~/.bashrc"]
-RUN conda activate rlex
-
-# install atari roms
-WORKDIR /src/rlydoe
-
-# RUN /src/install-atari.sh
-# CMD [ "/bin/bash" ]
+# # build and activate conda environment
+RUN /opt/conda/bin/conda env update -f rlydoe.yaml
+RUN echo "conda activate rlydoe" >> ~/.bashrc
 
 # Install Atari ROMs.
 # RUN pip3 install atari-py
@@ -72,4 +65,4 @@ RUN mkdir roms && \
 	rm ROMS.zip && \
 	rm "HC ROMS.zip" && \
 	rm Roms.rar && \
-	python3 -m atari_py.import_roms .
+	/opt/conda/envs/rlydoe/bin/python -m atari_py.import_roms .
